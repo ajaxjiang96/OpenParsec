@@ -79,13 +79,15 @@ struct LoginView:View
 						.edgesIgnoringSafeArea(.all)
 					VStack()
 					{
-						ActivityIndicator(isAnimating:$isLoading, style:.large, tint:Color("Foreground"))
+						ActivityIndicator(isAnimating:$isLoading, style:.large, tint:.white)
 							.padding()
 						Text("Loading...")
+							.multilineTextAlignment(.center)
 					}
 					.padding()
 					.background(Rectangle().fill(Color("BackgroundPrompt")))
 					.cornerRadius(8)
+					.padding()
 				}
 			}
 		}
