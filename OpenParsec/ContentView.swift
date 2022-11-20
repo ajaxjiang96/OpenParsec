@@ -1,21 +1,41 @@
-//
-//  ContentView.swift
-//  OpenParsec
-//
-//  Created by Chimera on 11/19/22.
-//
-
 import SwiftUI
 
-struct ContentView: View {
-    var body: some View {
-        Text("Hello, world!")
-            .padding()
-    }
+enum ViewType
+{
+	case login
+	case main
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+struct ContentView:View
+{
+	@State var curView:ViewType = .login
+
+	var body:some View
+	{
+		ZStack()
+		{
+			switch curView
+			{
+				case .login:
+					LoginView(self)
+				case .main:
+					MainView(self)
+						.transition(AnyTransition.move(edge:.trailing).animation(.easeInOut))
+			 }
+		}
+		.background(Rectangle().fill(Color.black).edgesIgnoringSafeArea(.all))
+	}
+
+	public func setView(_ t:ViewType)
+	{
+		withAnimation { curView = t }
+	}
+}
+
+struct ContentView_Previews:PreviewProvider
+{
+	static var previews:some View
+	{
+		ContentView()
+	}
 }
