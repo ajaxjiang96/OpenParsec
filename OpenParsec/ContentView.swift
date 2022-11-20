@@ -20,7 +20,7 @@ struct ContentView:View
 					LoginView(self)
 				case .main:
 					MainView(self)
-						.transition(AnyTransition.move(edge:.trailing).animation(.easeInOut))
+						.transition(AnyTransition.move(edge:.trailing))
 			 }
 		}
 		.background(Rectangle().fill(Color.black).edgesIgnoringSafeArea(.all))
@@ -28,7 +28,7 @@ struct ContentView:View
 
 	public func setView(_ t:ViewType)
 	{
-		withAnimation { curView = t }
+		withAnimation(.easeInOut) { curView = t }
 	}
 }
 
