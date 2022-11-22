@@ -4,16 +4,23 @@ struct MainView:View
 {
 	var controller:ContentView?
 
-	@State var showLogoutAlert:Bool = false
 	@State var refreshTime:String = "Last refreshed at 1/1/1970 12:00 AM"
-	@State var hosts:[HostInfo] =
-	[
-		HostInfo(id:"0", hostname:"Alpha's PC", username:"Alpha#000000"),
-		HostInfo(id:"1", hostname:"Beta's PC", username:"Beta#111111"),
-		HostInfo(id:"2", hostname:"Delta's PC", username:"Delta#222222")
-	]
+	@State var hosts:Array<IdentifiableHostInfo> = []
+
+	@State var showBaseAlert:Bool = false
+	@State var baseAlertText:String = ""
+
+	@State var showLogoutAlert:Bool = false
+
 	@State var isConnecting:Bool = false
 	@State var connectingToName:String = ""
+
+	@State var isRefreshing:Bool = false
+
+	var busy:Bool
+	{
+		isConnecting || isRefreshing
+	}
 
 	init(_ controller:ContentView?)
 	{
@@ -43,6 +50,10 @@ struct MainView:View
 					{
 						Button(action:{ showLogoutAlert = true }, label:{ Image(systemName:"chevron.left") })
 							.padding()
+							.alert(isPresented:$showLogoutAlert)
+							{
+								Alert(title:Text("Are you sure you want to logout?"), primaryButton:.destructive(Text("Logout"), action:logout), secondaryButton:.cancel(Text("Cancel")))
+							}
 						Spacer()
 						Button(action:refreshList, label:{ Image(systemName:"arrow.clockwise") })
 							.padding()
@@ -73,7 +84,7 @@ struct MainView:View
 								Text(i.hostname)
 									.font(.system(size:20, weight:.medium))
 									.multilineTextAlignment(.center)
-								Text(i.username)
+								Text("\(i.user.name)#\(String(i.user.id))")
 									.font(.system(size:16, weight:.medium))
 									.multilineTextAlignment(.center)
 									.opacity(0.5)
@@ -86,11 +97,13 @@ struct MainView:View
 											.cornerRadius(8)
 										Text("Connect")
 											.foregroundColor(.white)
-											.padding(6)
+											.padding(8)
 									}
+									.frame(maxWidth:100)
 								}
 							}
 							.padding()
+							.frame(maxWidth:400)
 							.background(Rectangle().fill(Color("BackgroundCard")))
 							.cornerRadius(8)
 						}
@@ -99,8 +112,13 @@ struct MainView:View
 				}
 				.padding(.top, -8)
 				.frame(maxWidth:.infinity)
+				.alert(isPresented:$showBaseAlert)
+				{
+					Alert(title:Text(baseAlertText))
+				}
 			}
-			.disabled(isConnecting)
+			.onAppear(perform:refreshList)
+			.disabled(busy) // disable view if busy
 
 			// Loading elements
 			if isConnecting
@@ -128,7 +146,28 @@ struct MainView:View
 									.foregroundColor(.red)
 							}
 						}
-						.frame(height:48)
+						.frame(maxWidth:100, maxHeight:48)
+					}
+					.padding()
+					.background(Rectangle().fill(Color("BackgroundPrompt")))
+					.cornerRadius(8)
+					.padding()
+				}
+			}
+			if isRefreshing
+			{
+				ZStack()
+				{
+					Rectangle() // Darken background
+						.fill(Color.black)
+						.opacity(0.5)
+						.edgesIgnoringSafeArea(.all)
+					VStack()
+					{
+						ActivityIndicator(isAnimating:$isRefreshing, style:.large, tint:.white)
+							.padding()
+						Text("Refreshing hosts...")
+							.multilineTextAlignment(.center)
 					}
 					.padding()
 					.background(Rectangle().fill(Color("BackgroundPrompt")))
@@ -138,30 +177,69 @@ struct MainView:View
 			}
 		}
 		.foregroundColor(Color("Foreground"))
-		.alert(isPresented:$showLogoutAlert)
-		{
-			Alert(title:Text("Are you sure you want to logout?"), primaryButton:.destructive(Text("Logout"), action:logout), secondaryButton:.cancel(Text("Cancel")))
-		}
 	}
 
 	func refreshList()
 	{
 		withAnimation
 		{
-			hosts =
-			[
-				HostInfo(id:"3", hostname:"Angel's PC", username:"Paradox 32#620477"),
-				HostInfo(id:"4", hostname:"Zenurik Central", username:"zachulti#896324")
-			]
+			isRefreshing = true
 
-			let date = Date()
-			let formatter = DateFormatter()
-			formatter.dateFormat = "M/d/yyyy h:mm a"
-			refreshTime = "Last refreshed at \(formatter.string(from:date))"
+			let clinfo = NetworkHandler.clinfo
+			if clinfo == nil
+			{
+				isRefreshing = false;
+				baseAlertText = "Error gathering hosts: Invalid session"
+				showBaseAlert = true
+				return
+			}
+
+			let apiURL = URL(string:"https://kessel-api.parsecgaming.com/v2/hosts?mode=desktop&public=false")!
+
+			var request = URLRequest(url:apiURL)
+			request.httpMethod = "GET";
+			request.setValue("application/json", forHTTPHeaderField:"Content-Type")
+			request.setValue("Bearer \(clinfo!.session_id)", forHTTPHeaderField:"Authorization")
+
+			let task = URLSession.shared.dataTask(with:request)
+			{ (data, response, error) in
+				if let data = data
+				{
+					let statusCode:Int = (response as! HTTPURLResponse).statusCode
+					let decoder = JSONDecoder()
+
+					print(statusCode)
+					print(String(data:data, encoding:.utf8)!)
+
+					if statusCode == 200 // 200 OK
+					{
+						let info:HostInfoList =  try! decoder.decode(HostInfoList.self, from:data)
+						hosts.removeAll()
+						info.data.forEach
+						{ h in
+							hosts.append(IdentifiableHostInfo(id:h.peer_id, hostname:h.name, user:h.user))
+						}
+
+						let formatter = DateFormatter()
+						formatter.dateFormat = "M/d/yyyy h:mm a"
+						refreshTime = "Last refreshed at \(formatter.string(from:Date()))"
+					}
+					else if statusCode == 403 // 403 Forbidden
+					{
+						let info:ErrorInfo = try! decoder.decode(ErrorInfo.self, from:data)
+
+						baseAlertText = "Error gathering hosts: \(info.error)"
+						showBaseAlert = true
+					}
+				}
+
+				isRefreshing = false
+			}
+			task.resume()
 		}
 	}
 
-	func connectTo(_ who:HostInfo)
+	func connectTo(_ who:IdentifiableHostInfo)
 	{
 		connectingToName = who.hostname
 		withAnimation { isConnecting = true }
@@ -174,6 +252,7 @@ struct MainView:View
 
 	func logout()
 	{
+		NetworkHandler.clinfo = nil
 		if let c = controller
 		{
 			c.setView(.login)
@@ -189,9 +268,9 @@ struct MainView_Previews:PreviewProvider
 	}
 }
 
-struct HostInfo:Identifiable
+struct IdentifiableHostInfo:Identifiable
 {
-	var id:String
+	var id:String // Peer ID
 	var hostname:String
-	var username:String
+	var user:UserInfo
 }

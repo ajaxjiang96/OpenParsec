@@ -10,6 +10,8 @@ struct ContentView:View
 {
 	@State var curView:ViewType = .login
 
+	let defaultTransition = AnyTransition.move(edge:.trailing)
+
 	var body:some View
 	{
 		ZStack()
@@ -20,7 +22,7 @@ struct ContentView:View
 					LoginView(self)
 				case .main:
 					MainView(self)
-						.transition(AnyTransition.move(edge:.trailing))
+						.transition(defaultTransition)
 			 }
 		}
 		.background(Rectangle().fill(Color.black).edgesIgnoringSafeArea(.all))

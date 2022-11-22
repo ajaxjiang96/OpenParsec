@@ -7,6 +7,8 @@ struct LoginView:View
 	@State var inputEmail:String = ""
 	@State var inputPassword:String = ""
 	@State var isLoading:Bool = false
+	@State var showAlert:Bool = false
+	@State var alertText:String = ""
 
 	init(_ controller:ContentView?)
 	{
@@ -92,19 +94,57 @@ struct LoginView:View
 			}
 		}
 		.foregroundColor(Color("Foreground"))
+		.alert(isPresented:$showAlert)
+		{
+			Alert(title:Text(alertText))
+		}
 	}
 
 	func authenticate()
 	{
 		withAnimation { isLoading = true }
-		DispatchQueue.main.asyncAfter(deadline:.now() + 3, execute:
-		{
+
+		let apiURL = URL(string:"https://kessel-api.parsecgaming.com/v1/auth")!
+
+		var request = URLRequest(url:apiURL)
+		request.httpMethod = "POST";
+		request.setValue("application/json", forHTTPHeaderField:"Content-Type")
+		request.httpBody = try? JSONSerialization.data(withJSONObject:
+		[
+			"email":inputEmail,
+			"password":inputPassword
+		], options:[])
+
+		let task = URLSession.shared.dataTask(with:request)
+		{ (data, response, error) in
 			isLoading = false
-			if let c = controller
+			if let data = data
 			{
-				c.setView(.main)
+				let statusCode:Int = (response as! HTTPURLResponse).statusCode
+				let decoder = JSONDecoder()
+
+				print(statusCode)
+				print(String(data:data, encoding:.utf8)!)
+
+				if statusCode == 201 // 201 Created
+				{
+					NetworkHandler.clinfo = try? decoder.decode(ClientInfo.self, from:data)
+
+					if let c = controller
+					{
+						c.setView(.main)
+					}
+				}
+				else if statusCode == 403 // 403 Forbidden
+				{
+					let info:ErrorInfo = try! decoder.decode(ErrorInfo.self, from:data)
+
+					alertText = "Error: \(info.error)"
+					showAlert = true
+				}
 			}
-		})
+		}
+		task.resume()
 	}
 }
 
