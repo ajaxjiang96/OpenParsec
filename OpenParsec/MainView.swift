@@ -5,7 +5,15 @@ struct MainView:View
 	var controller:ContentView?
 
 	@State var showLogoutAlert:Bool = false
+	@State var refreshTime:String = "Last refreshed at 1/1/1970 12:00 AM"
+	@State var hosts:[HostInfo] =
+	[
+		HostInfo(id:"0", hostname:"Alpha's PC", username:"Alpha#000000"),
+		HostInfo(id:"1", hostname:"Beta's PC", username:"Beta#111111"),
+		HostInfo(id:"2", hostname:"Delta's PC", username:"Delta#222222")
+	]
 	@State var isConnecting:Bool = false
+	@State var connectingToName:String = ""
 
 	init(_ controller:ContentView?)
 	{
@@ -36,7 +44,7 @@ struct MainView:View
 						Button(action:{ showLogoutAlert = true }, label:{ Image(systemName:"chevron.left") })
 							.padding()
 						Spacer()
-						Button(action:{}, label:{ Image(systemName:"arrow.clockwise") })
+						Button(action:refreshList, label:{ Image(systemName:"arrow.clockwise") })
 							.padding()
 						Button(action:{}, label:{ Image(systemName:"gear") })
 							.padding()
@@ -49,7 +57,10 @@ struct MainView:View
 				{
 					VStack()
 					{
-						ForEach(0..<5)
+						Text(refreshTime)
+							.multilineTextAlignment(.center)
+							.opacity(0.5)
+						ForEach(hosts)
 						{ i in
 							VStack()
 							{
@@ -59,10 +70,10 @@ struct MainView:View
 									.frame(width:64, height:64)
 									.background(Rectangle().fill(Color("BackgroundPrompt")))
 									.cornerRadius(8)
-								Text("User's PC")
+								Text(i.hostname)
 									.font(.system(size:20, weight:.medium))
 									.multilineTextAlignment(.center)
-								Text("Username#000000")
+								Text(i.username)
 									.font(.system(size:16, weight:.medium))
 									.multilineTextAlignment(.center)
 									.opacity(0.5)
@@ -104,7 +115,7 @@ struct MainView:View
 					{
 						ActivityIndicator(isAnimating:$isConnecting, style:.large, tint:.white)
 							.padding()
-						Text("Requesting connection to User's PC...")
+						Text("Requesting connection to \(connectingToName)...")
 							.multilineTextAlignment(.center)
 						Button(action:cancelConnection)
 						{
@@ -133,8 +144,26 @@ struct MainView:View
 		}
 	}
 
-	func connectTo(_ who:Int)
+	func refreshList()
 	{
+		withAnimation
+		{
+			hosts =
+			[
+				HostInfo(id:"3", hostname:"Angel's PC", username:"Paradox 32#620477"),
+				HostInfo(id:"4", hostname:"Zenurik Central", username:"zachulti#896324")
+			]
+
+			let date = Date()
+			let formatter = DateFormatter()
+			formatter.dateFormat = "M/d/yyyy h:mm a"
+			refreshTime = "Last refreshed at \(formatter.string(from:date))"
+		}
+	}
+
+	func connectTo(_ who:HostInfo)
+	{
+		connectingToName = who.hostname
 		withAnimation { isConnecting = true }
 	}
 
@@ -158,4 +187,11 @@ struct MainView_Previews:PreviewProvider
 	{
 		MainView(nil)
 	}
+}
+
+struct HostInfo:Identifiable
+{
+	var id:String
+	var hostname:String
+	var username:String
 }
