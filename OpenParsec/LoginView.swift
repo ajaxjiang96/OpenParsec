@@ -102,6 +102,17 @@ struct LoginView:View
 
 	func authenticate()
 	{
+		#if DEBUG
+		if inputEmail == "test@example.com" // skip authentication (DEBUG ONLY)
+		{
+			if let c = controller
+			{
+				c.setView(.main)
+			}
+			return
+		}
+		#endif
+
 		withAnimation { isLoading = true }
 
 		let apiURL = URL(string:"https://kessel-api.parsecgaming.com/v1/auth")!

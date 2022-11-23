@@ -17,9 +17,11 @@ struct MainView:View
 
 	@State var isRefreshing:Bool = false
 
+	@State var inSettings:Bool = false
+
 	var busy:Bool
 	{
-		isConnecting || isRefreshing
+		isConnecting || isRefreshing || inSettings
 	}
 
 	init(_ controller:ContentView?)
@@ -57,8 +59,8 @@ struct MainView:View
 						Spacer()
 						Button(action:refreshList, label:{ Image(systemName:"arrow.clockwise") })
 							.padding()
-						Button(action:{}, label:{ Image(systemName:"gear") })
-							.padding()
+//						Button(action:{ withAnimation { inSettings = true } }, label:{ Image(systemName:"gear") })
+//							.padding()
 					}
 					.foregroundColor(Color("AccentColor"))
 				}
@@ -171,6 +173,35 @@ struct MainView:View
 					}
 					.padding()
 					.background(Rectangle().fill(Color("BackgroundPrompt")))
+					.cornerRadius(8)
+					.padding()
+				}
+			}
+
+			// Settings screen
+			if inSettings
+			{
+				ZStack()
+				{
+					Rectangle() // Darken background
+						.fill(Color.black)
+						.opacity(0.5)
+						.edgesIgnoringSafeArea(.all)
+					VStack()
+					{
+						HStack()
+						{
+							Button(action:{ withAnimation { inSettings = false } }, label:{ Image(systemName:"xmark") })
+							Spacer()
+						}
+						.foregroundColor(Color("AccentColor"))
+						ScrollView(.vertical)
+						{
+
+						}
+					}
+					.padding()
+					.background(Rectangle().fill(Color("BackgroundGray")))
 					.cornerRadius(8)
 					.padding()
 				}
