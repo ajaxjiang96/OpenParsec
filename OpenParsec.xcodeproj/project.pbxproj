@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		27B8D564292DC7A000A324AD /* Parsec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B8D563292DC7A000A324AD /* Parsec.swift */; };
+		271D14F9292E90EB00D7F1D6 /* ParsecView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271D14F8292E90EB00D7F1D6 /* ParsecView.swift */; };
+		27B8D564292DC7A000A324AD /* CParsec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B8D563292DC7A000A324AD /* CParsec.swift */; };
 		27B8D571292DCA5B00A324AD /* ParsecSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27B8D56F292DCA5800A324AD /* ParsecSDK.framework */; };
 		27B8D572292DCA5B00A324AD /* ParsecSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 27B8D56F292DCA5800A324AD /* ParsecSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		27E61A92292965FC00FF6563 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27E61A91292965FC00FF6563 /* AppDelegate.swift */; };
@@ -37,7 +38,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		27B8D563292DC7A000A324AD /* Parsec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parsec.swift; sourceTree = "<group>"; };
+		271D14F8292E90EB00D7F1D6 /* ParsecView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParsecView.swift; sourceTree = "<group>"; };
+		27B8D563292DC7A000A324AD /* CParsec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CParsec.swift; sourceTree = "<group>"; };
 		27B8D56F292DCA5800A324AD /* ParsecSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParsecSDK.framework; path = "../../../../../Users/mike/Documents/Repositories/parsec-sdk/sdk/ios/ParsecSDK.framework"; sourceTree = "<group>"; };
 		27E61A8E292965FC00FF6563 /* OpenParsec.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenParsec.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		27E61A91292965FC00FF6563 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -104,7 +106,8 @@
 				27E61AA7292994B500FF6563 /* ActivityIndicator.swift */,
 				27E61AA92929B92200FF6563 /* MainView.swift */,
 				27ED36FE292D4F9800B1BE3D /* NetworkHandler.swift */,
-				27B8D563292DC7A000A324AD /* Parsec.swift */,
+				27B8D563292DC7A000A324AD /* CParsec.swift */,
+				271D14F8292E90EB00D7F1D6 /* ParsecView.swift */,
 			);
 			path = OpenParsec;
 			sourceTree = "<group>";
@@ -193,9 +196,10 @@
 				27E61AA8292994B500FF6563 /* ActivityIndicator.swift in Sources */,
 				27E61A94292965FC00FF6563 /* SceneDelegate.swift in Sources */,
 				27E61AA62929817700FF6563 /* LoginView.swift in Sources */,
-				27B8D564292DC7A000A324AD /* Parsec.swift in Sources */,
+				27B8D564292DC7A000A324AD /* CParsec.swift in Sources */,
 				27E61A96292965FC00FF6563 /* ContentView.swift in Sources */,
 				27ED36FF292D4F9800B1BE3D /* NetworkHandler.swift in Sources */,
+				271D14F9292E90EB00D7F1D6 /* ParsecView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

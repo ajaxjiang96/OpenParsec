@@ -4,6 +4,7 @@ enum ViewType
 {
 	case login
 	case main
+	case parsec
 }
 
 struct ContentView:View
@@ -23,9 +24,12 @@ struct ContentView:View
 				case .main:
 					MainView(self)
 						.transition(defaultTransition)
+				case .parsec:
+					ParsecView(self)
 			 }
 		}
 		.background(Rectangle().fill(Color.black).edgesIgnoringSafeArea(.all))
+		.onAppear { CParsec.initialize() }
 	}
 
 	public func setView(_ t:ViewType)

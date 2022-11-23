@@ -1,4 +1,5 @@
 import SwiftUI
+import ParsecSDK
 
 struct MainView:View
 {
@@ -274,6 +275,33 @@ struct MainView:View
 	{
 		connectingToName = who.hostname
 		withAnimation { isConnecting = true }
+
+		var status = CParsec.connect(who.id)
+
+		// Polling status
+		Timer.scheduledTimer(withTimeInterval:1, repeats:true)
+		{ timer in
+			status = CParsec.getStatus()
+
+			if status == PARSEC_CONNECTING { return } // wait
+
+			withAnimation { isConnecting = false }
+
+			if status == PARSEC_OK
+			{
+				if let c = controller
+				{
+					c.setView(.parsec)
+				}
+			}
+			else
+			{
+				baseAlertText = "Error connecting to host (code \(status.rawValue))"
+				showBaseAlert = true
+			}
+
+			timer.invalidate()
+		}
 	}
 
 	func cancelConnection()
