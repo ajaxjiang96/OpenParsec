@@ -19,20 +19,16 @@ struct ParsecView:View
 	{
 		ZStack()
 		{
-			// Background
-			Rectangle()
-				.fill(Color.black)
-				.edgesIgnoringSafeArea(.all)
-
-			Text("Parsec View")
-				.foregroundColor(.white)
+			// Stream view controller
+			ParsecGLKViewController()
 		}
+		.statusBar(hidden:true)
 		.alert(isPresented:$showDCAlert)
 		{
 			Alert(title:Text(DCAlertText), dismissButton:.default(Text("Close"), action:disconnect))
 		}
 		.onAppear(perform:startPollTimer)
-		.statusBar(hidden:true)
+		.onDisappear(perform:stopPollTimer)
 	}
 
 	func startPollTimer()
@@ -50,10 +46,13 @@ struct ParsecView:View
 		}
 	}
 
-	func disconnect()
+	func stopPollTimer()
 	{
 		pollTimer!.invalidate()
+	}
 
+	func disconnect()
+	{
 		CParsec.disconnect()
 
 		if let c = controller

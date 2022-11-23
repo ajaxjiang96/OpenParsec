@@ -1,4 +1,10 @@
 import ParsecSDK
+import UIKit
+
+enum RendererType
+{
+	case opengl
+}
 
 class CParsec
 {
@@ -43,5 +49,19 @@ class CParsec
 	static func getStatus() -> ParsecStatus
 	{
 		return ParsecClientGetStatus(_parsec, nil)
+	}
+
+	static func setFrame(_ width:CGFloat, _ height:CGFloat, _ scale:CGFloat)
+	{
+		ParsecClientSetDimensions(_parsec, UInt8(DEFAULT_STREAM), UInt32(width), UInt32(height), Float(scale))
+	}
+
+	static func renderFrame(_ type:RendererType, timeout:UInt32 = 16) // timeout in ms, 16 == 60 FPS, 8 == 120 FPS
+	{
+		switch type
+		{
+			case .opengl:
+				ParsecClientGLRenderFrame(_parsec, UInt8(DEFAULT_STREAM), nil, nil, timeout)
+		}
 	}
 }

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		271D14F9292E90EB00D7F1D6 /* ParsecView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271D14F8292E90EB00D7F1D6 /* ParsecView.swift */; };
+		271D14FC292EAA3600D7F1D6 /* ParsecGLKRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271D14FA292EAA3600D7F1D6 /* ParsecGLKRenderer.swift */; };
+		271D14FD292EAA3600D7F1D6 /* ParsecGLKViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271D14FB292EAA3600D7F1D6 /* ParsecGLKViewController.swift */; };
 		27B8D564292DC7A000A324AD /* CParsec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27B8D563292DC7A000A324AD /* CParsec.swift */; };
 		27B8D571292DCA5B00A324AD /* ParsecSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27B8D56F292DCA5800A324AD /* ParsecSDK.framework */; };
 		27B8D572292DCA5B00A324AD /* ParsecSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 27B8D56F292DCA5800A324AD /* ParsecSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -39,6 +41,8 @@
 
 /* Begin PBXFileReference section */
 		271D14F8292E90EB00D7F1D6 /* ParsecView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParsecView.swift; sourceTree = "<group>"; };
+		271D14FA292EAA3600D7F1D6 /* ParsecGLKRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsecGLKRenderer.swift; sourceTree = "<group>"; };
+		271D14FB292EAA3600D7F1D6 /* ParsecGLKViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParsecGLKViewController.swift; sourceTree = "<group>"; };
 		27B8D563292DC7A000A324AD /* CParsec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CParsec.swift; sourceTree = "<group>"; };
 		27B8D56F292DCA5800A324AD /* ParsecSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParsecSDK.framework; path = "../../../../../Users/mike/Documents/Repositories/parsec-sdk/sdk/ios/ParsecSDK.framework"; sourceTree = "<group>"; };
 		27E61A8E292965FC00FF6563 /* OpenParsec.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenParsec.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -95,6 +99,8 @@
 		27E61A90292965FC00FF6563 /* OpenParsec */ = {
 			isa = PBXGroup;
 			children = (
+				271D14FA292EAA3600D7F1D6 /* ParsecGLKRenderer.swift */,
+				271D14FB292EAA3600D7F1D6 /* ParsecGLKViewController.swift */,
 				27E61A91292965FC00FF6563 /* AppDelegate.swift */,
 				27E61A93292965FC00FF6563 /* SceneDelegate.swift */,
 				27E61A95292965FC00FF6563 /* ContentView.swift */,
@@ -193,7 +199,9 @@
 			files = (
 				27E61A92292965FC00FF6563 /* AppDelegate.swift in Sources */,
 				27E61AAA2929B92200FF6563 /* MainView.swift in Sources */,
+				271D14FD292EAA3600D7F1D6 /* ParsecGLKViewController.swift in Sources */,
 				27E61AA8292994B500FF6563 /* ActivityIndicator.swift in Sources */,
+				271D14FC292EAA3600D7F1D6 /* ParsecGLKRenderer.swift in Sources */,
 				27E61A94292965FC00FF6563 /* SceneDelegate.swift in Sources */,
 				27E61AA62929817700FF6563 /* LoginView.swift in Sources */,
 				27B8D564292DC7A000A324AD /* CParsec.swift in Sources */,
