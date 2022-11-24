@@ -146,7 +146,7 @@ struct LoginView:View
 						c.setView(.main)
 					}
 				}
-				else if statusCode == 403 // 403 Forbidden
+				else if statusCode >= 400 // 4XX client errors
 				{
 					let info:ErrorInfo = try! decoder.decode(ErrorInfo.self, from:data)
 

@@ -10,6 +10,8 @@ struct ParsecView:View
 	@State var showDCAlert:Bool = false
 	@State var DCAlertText:String = "Disconnected (reason unknown)"
 
+	@State var showMenu:Bool = false
+
 	init(_ controller:ContentView?)
 	{
 		self.controller = controller
@@ -21,6 +23,48 @@ struct ParsecView:View
 		{
 			// Stream view controller
 			ParsecGLKViewController()
+				.zIndex(0)
+
+			// Overlay elements
+			VStack()
+			{
+				HStack()
+				{
+					Button(action:{ showMenu.toggle() })
+					{
+						Image("IconTransparent")
+							.resizable()
+							.aspectRatio(contentMode: .fit)
+							.frame(width:48, height:48)
+							.background(Rectangle().fill(Color("BackgroundPrompt")))
+							.cornerRadius(8)
+							.opacity(showMenu ? 1 : 0.25)
+					}
+					.padding()
+					Spacer()
+				}
+				if showMenu
+				{
+					HStack()
+					{
+						VStack()
+						{
+							Button(action:disconnect)
+							{
+								Text("Disconnect")
+									.foregroundColor(.red)
+									.padding()
+							}
+						}
+						.background(Rectangle().fill(Color("BackgroundPrompt")))
+						.cornerRadius(8)
+						.padding(.horizontal)
+						Spacer()
+					}
+				}
+				Spacer()
+			}
+			.zIndex(1)
 		}
 		.statusBar(hidden:true)
 		.alert(isPresented:$showDCAlert)

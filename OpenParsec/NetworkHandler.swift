@@ -6,7 +6,7 @@ class NetworkHandler
 struct ErrorInfo:Decodable
 {
 	var error:String
-	var codes:Array<Int>
+//	var codes:Array
 }
 
 struct ClientInfo:Decodable
