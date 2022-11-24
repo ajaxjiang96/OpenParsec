@@ -10,6 +10,7 @@ struct ParsecView:View
 	@State var showDCAlert:Bool = false
 	@State var DCAlertText:String = "Disconnected (reason unknown)"
 
+	@State var hideOverlay:Bool = false
 	@State var showMenu:Bool = false
 
 	init(_ controller:ContentView?)
@@ -28,35 +29,53 @@ struct ParsecView:View
 			// Overlay elements
 			VStack()
 			{
-				HStack()
+				if !hideOverlay
 				{
-					Button(action:{ showMenu.toggle() })
+					HStack()
 					{
-						Image("IconTransparent")
-							.resizable()
-							.aspectRatio(contentMode: .fit)
-							.frame(width:48, height:48)
-							.background(Rectangle().fill(Color("BackgroundPrompt")))
-							.cornerRadius(8)
-							.opacity(showMenu ? 1 : 0.25)
+						Button(action:{ showMenu.toggle() })
+						{
+							Image("IconTransparent")
+								.resizable()
+								.aspectRatio(contentMode: .fit)
+								.frame(width:48, height:48)
+								.background(Rectangle().fill(Color("BackgroundPrompt").opacity(showMenu ? 0.75 : 1)))
+								.cornerRadius(8)
+								.opacity(showMenu ? 1 : 0.25)
+						}
+						.padding()
+						Spacer()
 					}
-					.padding()
-					Spacer()
 				}
 				if showMenu
 				{
 					HStack()
 					{
-						VStack()
+						VStack(spacing:2)
 						{
+							Button(action:disableOverlay)
+							{
+								Text("Hide Overlay")
+									.padding(12)
+									.frame(maxWidth:.infinity)
+									.multilineTextAlignment(.center)
+							}
+							Rectangle()
+								.fill(Color("Foreground"))
+								.opacity(0.25)
+								.frame(height:1)
 							Button(action:disconnect)
 							{
 								Text("Disconnect")
 									.foregroundColor(.red)
-									.padding()
+									.padding(12)
+									.frame(maxWidth:.infinity)
+									.multilineTextAlignment(.center)
 							}
 						}
-						.background(Rectangle().fill(Color("BackgroundPrompt")))
+						.background(Rectangle().fill(Color("BackgroundPrompt").opacity(0.75)))
+						.foregroundColor(Color("Foreground"))
+						.frame(maxWidth:175)
 						.cornerRadius(8)
 						.padding(.horizontal)
 						Spacer()
@@ -93,6 +112,12 @@ struct ParsecView:View
 	func stopPollTimer()
 	{
 		pollTimer!.invalidate()
+	}
+
+	func disableOverlay()
+	{
+		hideOverlay = true
+		showMenu = false
 	}
 
 	func disconnect()
