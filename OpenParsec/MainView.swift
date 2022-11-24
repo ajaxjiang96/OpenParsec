@@ -15,6 +15,7 @@ struct MainView:View
 
 	@State var isConnecting:Bool = false
 	@State var connectingToName:String = ""
+	@State var pollTimer:Timer?
 
 	@State var isRefreshing:Bool = false
 
@@ -279,7 +280,7 @@ struct MainView:View
 		var status = CParsec.connect(who.id)
 
 		// Polling status
-		Timer.scheduledTimer(withTimeInterval:1, repeats:true)
+		pollTimer = Timer.scheduledTimer(withTimeInterval:1, repeats:true)
 		{ timer in
 			status = CParsec.getStatus()
 
@@ -307,6 +308,10 @@ struct MainView:View
 	func cancelConnection()
 	{
 		withAnimation { isConnecting = false }
+
+		CParsec.disconnect()
+
+		pollTimer!.invalidate()
 	}
 
 	func logout()
