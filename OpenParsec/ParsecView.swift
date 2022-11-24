@@ -13,6 +13,8 @@ struct ParsecView:View
 	@State var hideOverlay:Bool = false
 	@State var showMenu:Bool = false
 
+	@State var muted:Bool = false
+
 	init(_ controller:ContentView?)
 	{
 		self.controller = controller
@@ -51,11 +53,18 @@ struct ParsecView:View
 				{
 					HStack()
 					{
-						VStack(spacing:2)
+						VStack(spacing:3)
 						{
 							Button(action:disableOverlay)
 							{
 								Text("Hide Overlay")
+									.padding(12)
+									.frame(maxWidth:.infinity)
+									.multilineTextAlignment(.center)
+							}
+							Button(action:toggleMute)
+							{
+								Text("Sound \(muted ? "OFF" : "ON")")
 									.padding(12)
 									.frame(maxWidth:.infinity)
 									.multilineTextAlignment(.center)
@@ -107,6 +116,7 @@ struct ParsecView:View
 				timer.invalidate()
 			}
 		}
+		CParsec.setMuted(muted)
 	}
 
 	func stopPollTimer()
@@ -118,6 +128,12 @@ struct ParsecView:View
 	{
 		hideOverlay = true
 		showMenu = false
+	}
+
+	func toggleMute()
+	{
+		muted.toggle()
+		CParsec.setMuted(muted)
 	}
 
 	func disconnect()

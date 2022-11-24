@@ -7,6 +7,8 @@
 #define NUM_AUDIO_BUF 24
 #define BUFFER_SIZE 4096
 
+bool isMuted = false;
+
 struct audio {
     AudioQueueRef q;
     AudioQueueBufferRef audio_buf[NUM_AUDIO_BUF];
@@ -76,7 +78,7 @@ void audio_cb(const int16_t *pcm, uint32_t frames, void *opaque)
 {
     struct audio *ctx = (struct audio *) opaque;
     
-    if (ctx == NULL)
+    if (ctx == NULL || isMuted)
         return;
     
     // Use the first available buffer is one is free
@@ -101,4 +103,9 @@ void audio_cb(const int16_t *pcm, uint32_t frames, void *opaque)
         
     if (ctx->in_use > 10)
         AudioQueueStart(ctx->q, NULL);
+}
+
+void audio_mute(bool muted)
+{
+	isMuted = muted;
 }

@@ -71,8 +71,13 @@ class CParsec
 		}
 	}
 
-	static func pollAudio()
+	static func pollAudio(timeout:UInt32 = 16) // timeout in ms, 16 == 60 FPS, 8 == 120 FPS
 	{
-		ParsecClientPollAudio(_parsec, audio_cb, 0, _audioPtr)
+		ParsecClientPollAudio(_parsec, audio_cb, timeout, _audioPtr)
+	}
+
+	static func setMuted(_ muted:Bool)
+	{
+		audio_mute(muted)
 	}
 }
