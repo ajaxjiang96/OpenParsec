@@ -8,8 +8,11 @@ enum RendererType
 
 class CParsec
 {
-	private static var _parsec:OpaquePointer!
 	private static var _initted:Bool = false
+
+	private static var _parsec:OpaquePointer!
+	private static var _audio:OpaquePointer!
+	private static let _audioPtr:UnsafeRawPointer = UnsafeRawPointer(_audio)
 
 	static let PARSEC_VER:UInt32 = UInt32((PARSEC_VER_MAJOR << 16) | PARSEC_VER_MINOR)
 
@@ -24,6 +27,8 @@ class CParsec
 			print("[\(level == LOG_DEBUG ? "D" : "I")] \(String(cString:msg!))")
 		}, nil)
 
+		audio_init(&_audio)
+
 		ParsecInit(PARSEC_VER, nil, nil, &_parsec)
 
 		_initted = true
@@ -34,6 +39,7 @@ class CParsec
 		if !_initted { return }
 
 		ParsecDestroy(_parsec)
+		audio_destroy(&_audio)
 	}
 
 	static func connect(_ peerID:String) -> ParsecStatus
@@ -63,5 +69,10 @@ class CParsec
 			case .opengl:
 				ParsecClientGLRenderFrame(_parsec, UInt8(DEFAULT_STREAM), nil, nil, timeout)
 		}
+	}
+
+	static func pollAudio()
+	{
+		ParsecClientPollAudio(_parsec, audio_cb, 0, _audioPtr)
 	}
 }
